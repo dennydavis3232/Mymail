@@ -34,7 +34,7 @@ namespace Mymail
                     File.AppendAllText(file, DateTime.Now.ToLongTimeString() + "***" + str + Environment.NewLine);
                     break;
                 }
-                catch (Exception cx)
+                catch 
                 {
 
                 }
@@ -73,6 +73,8 @@ namespace Mymail
                         string subject = row[3].ToString();
                         string body = row[5].ToString();
                         string filetype = row[6].ToString();
+                        string emailAddressesFromDB = row["emailid"].ToString(); //fetch the email from db
+                        string[] emailAddressesArray = emailAddressesFromDB.Split(','); //split the email using
 
                         FileResult fileResult = getfile();
                         ArrayList fileList = fileResult.FileNamesList;
@@ -88,7 +90,7 @@ namespace Mymail
                                     string sourceFilePath = Path.Combine(@"C:\location\exact", fileName);
                                     string destinationFilePath = Path.Combine(destinationPath, fileName);
                                     File.Move(sourceFilePath, destinationFilePath);
-                                    ob2.SendMail(mail, body, subject, destinationPath, fileName);
+                                    ob2.SendMail(emailAddressesArray, body, subject, destinationPath, fileName);
                                     matched = true;
                                     break;
                                 }
@@ -154,8 +156,8 @@ namespace Mymail
 
         public FileResult getfile()
         {
-            string oldPath = @"C:\location\exact";
-            string destinationPath = @"C:\newpath";
+            string oldPath = ConfigurationManager.AppSettings["OldFolderPath"];
+            string destinationPath = ConfigurationManager.AppSettings["NewFolderPath"];
             ArrayList fileNamesList = new ArrayList();
 
 
